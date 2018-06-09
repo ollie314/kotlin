@@ -119,7 +119,7 @@ fun unInvalidateBuiltinsAndStdLib(project: Project, runnable: () -> Unit) {
     }
 }
 
-private val VirtualFile.isStdLibFile: Boolean get() = presentableUrl.contains("kotlin-runtime.jar")
+private val VirtualFile.isStdLibFile: Boolean get() = presentableUrl.contains("kotlin-stdlib.jar")
 
 fun invalidateLibraryCache(project: Project) {
     LibraryModificationTracker.getInstance(project).incModificationCount()
