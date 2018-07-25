@@ -7,14 +7,30 @@ package org.jetbrains.kotlin.ir.backend.js.ir
 
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.backend.common.descriptors.WrappedSimpleFunctionDescriptor
+import org.jetbrains.kotlin.backend.common.descriptors.WrappedTypeParameterDescriptor
+import org.jetbrains.kotlin.backend.common.descriptors.WrappedValueParameterDescriptor
+import org.jetbrains.kotlin.backend.common.descriptors.WrappedVariableDescriptor
+import org.jetbrains.kotlin.descriptors.Modality
+import org.jetbrains.kotlin.descriptors.Visibilities
+import org.jetbrains.kotlin.descriptors.Visibility
 import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
+import org.jetbrains.kotlin.ir.declarations.*
+import org.jetbrains.kotlin.ir.declarations.impl.IrFunctionImpl
+import org.jetbrains.kotlin.ir.declarations.impl.IrTypeParameterImpl
+import org.jetbrains.kotlin.ir.declarations.impl.IrValueParameterImpl
+import org.jetbrains.kotlin.ir.declarations.impl.IrVariableImpl
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.declarations.impl.*
 import org.jetbrains.kotlin.ir.expressions.*
 import org.jetbrains.kotlin.ir.expressions.impl.*
 import org.jetbrains.kotlin.ir.symbols.*
 import org.jetbrains.kotlin.ir.types.IrSimpleType
+import org.jetbrains.kotlin.ir.symbols.impl.IrSimpleFunctionSymbolImpl
+import org.jetbrains.kotlin.ir.symbols.impl.IrTypeParameterSymbolImpl
+import org.jetbrains.kotlin.ir.symbols.impl.IrValueParameterSymbolImpl
+import org.jetbrains.kotlin.ir.symbols.impl.IrVariableSymbolImpl
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.createType
 import org.jetbrains.kotlin.ir.types.getClass
@@ -30,6 +46,8 @@ import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.TypeUtils
 import org.jetbrains.kotlin.types.typeUtil.immediateSupertypes
 import java.lang.reflect.Proxy
+import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.types.Variance
 
 object JsIrBuilder {
 
@@ -57,13 +75,78 @@ object JsIrBuilder {
 
     fun buildThrow(type: IrType, value: IrExpression) = IrThrowImpl(UNDEFINED_OFFSET, UNDEFINED_OFFSET, type, value)
 
-    fun buildValueParameter(symbol: IrValueParameterSymbol, type: IrType? = null) =
-        IrValueParameterImpl(UNDEFINED_OFFSET, UNDEFINED_OFFSET, SYNTHESIZED_DECLARATION, symbol, type ?: symbol.owner.type, null)
+    fun buildValueParameter(name: String = "tmp", index: Int, type: IrType) = buildValueParameter(Name.identifier(name), index, type)
 
-    fun buildFunction(symbol: IrSimpleFunctionSymbol, returnType: IrType) =
-        IrFunctionImpl(UNDEFINED_OFFSET, UNDEFINED_OFFSET, SYNTHESIZED_DECLARATION, symbol).apply {
-            this.returnType = returnType
+    fun buildValueParameter(name: Name, index: Int, type: IrType, origin: IrDeclarationOrigin = SYNTHESIZED_DECLARATION): IrValueParameter {
+        val descriptor = WrappedValueParameterDescriptor()
+        return IrValueParameterImpl(
+            UNDEFINED_OFFSET,
+            UNDEFINED_OFFSET,
+            origin,
+            IrValueParameterSymbolImpl(descriptor),
+            name,
+            index,
+            type,
+            null,
+            false,
+            false
+        ).also {
+            descriptor.bind(it)
         }
+    }
+
+    fun buildTypeParameter(name: Name, index: Int, isReified: Boolean, variance: Variance = Variance.INVARIANT): IrTypeParameter {
+        val descriptor = WrappedTypeParameterDescriptor()
+        return IrTypeParameterImpl(
+            UNDEFINED_OFFSET,
+            UNDEFINED_OFFSET,
+            SYNTHESIZED_DECLARATION,
+            IrTypeParameterSymbolImpl(descriptor),
+            name,
+            index,
+            isReified,
+            variance
+        ).also {
+            descriptor.bind(it)
+        }
+    }
+
+    fun buildFunction(
+        name: String,
+        visibility: Visibility = Visibilities.PUBLIC,
+        modality: Modality = Modality.FINAL,
+        isInline: Boolean = false,
+        isExternal: Boolean = false,
+        isTailrec: Boolean = false,
+        isSuspend: Boolean = false,
+        origin: IrDeclarationOrigin = SYNTHESIZED_DECLARATION
+    ) = JsIrBuilder.buildFunction(Name.identifier(name), visibility, modality, isInline, isExternal, isTailrec, isSuspend, origin)
+
+    fun buildFunction(
+        name: Name,
+        visibility: Visibility = Visibilities.PUBLIC,
+        modality: Modality = Modality.FINAL,
+        isInline: Boolean = false,
+        isExternal: Boolean = false,
+        isTailrec: Boolean = false,
+        isSuspend: Boolean = false,
+        origin: IrDeclarationOrigin = SYNTHESIZED_DECLARATION
+    ): IrSimpleFunction {
+        val descriptor = WrappedSimpleFunctionDescriptor()
+        return IrFunctionImpl(
+            UNDEFINED_OFFSET,
+            UNDEFINED_OFFSET,
+            origin,
+            IrSimpleFunctionSymbolImpl(descriptor),
+            name,
+            visibility,
+            modality,
+            isInline,
+            isExternal,
+            isTailrec,
+            isSuspend
+        ).also { descriptor.bind(it) }
+    }
 
     fun buildGetObjectValue(type: IrType, classSymbol: IrClassSymbol) =
         IrGetObjectValueImpl(UNDEFINED_OFFSET, UNDEFINED_OFFSET, type, classSymbol)
@@ -92,9 +175,30 @@ object JsIrBuilder {
     fun buildFunctionReference(type: IrType, symbol: IrFunctionSymbol) =
         IrFunctionReferenceImpl(UNDEFINED_OFFSET, UNDEFINED_OFFSET, type, symbol, symbol.descriptor, 0, null)
 
-    fun buildVar(symbol: IrVariableSymbol, initializer: IrExpression? = null, type: IrType) =
-        IrVariableImpl(UNDEFINED_OFFSET, UNDEFINED_OFFSET, SYNTHESIZED_DECLARATION, symbol, type)
-            .apply { this.initializer = initializer }
+    fun buildVar(
+        type: IrType,
+        name: String = "tmp",
+        isVar: Boolean = false,
+        isConst: Boolean = false,
+        isLateinit: Boolean = false,
+        initializer: IrExpression? = null
+    ): IrVariable {
+        val descriptor = WrappedVariableDescriptor()
+        return IrVariableImpl(
+            UNDEFINED_OFFSET,
+            UNDEFINED_OFFSET,
+            SYNTHESIZED_DECLARATION,
+            IrVariableSymbolImpl(descriptor),
+            Name.identifier(name),
+            type,
+            isVar,
+            isConst,
+            isLateinit
+        ).also {
+            descriptor.bind(it)
+            it.initializer = initializer
+        }
+    }
 
     fun buildBreak(type: IrType, loop: IrLoop) = IrBreakImpl(UNDEFINED_OFFSET, UNDEFINED_OFFSET, type, loop)
     fun buildContinue(type: IrType, loop: IrLoop) = IrContinueImpl(UNDEFINED_OFFSET, UNDEFINED_OFFSET, type, loop)
@@ -133,6 +237,25 @@ object JsIrBuilder {
     fun buildInt(type: IrType, v: Int) = IrConstImpl.int(UNDEFINED_OFFSET, UNDEFINED_OFFSET, type, v)
     fun buildString(type: IrType, s: String) = IrConstImpl.string(UNDEFINED_OFFSET, UNDEFINED_OFFSET, type, s)
     fun buildCatch(ex: IrVariable, block: IrBlockImpl) = IrCatchImpl(UNDEFINED_OFFSET, UNDEFINED_OFFSET, ex, block)
+}
+
+fun IrFunction.copyParameterDeclarationsFrom(from: IrFunction) {
+
+    fun IrValueParameter.copyTo(f: IrFunction, shift: Int = 0): IrValueParameter {
+        return JsIrBuilder.buildValueParameter(name, index + shift, type).also { it.parent = f }
+    }
+    fun IrTypeParameter.copyTo(f: IrFunction): IrTypeParameter {
+        return JsIrBuilder.buildTypeParameter(name, index, isReified, variance).also { it.parent = f }
+    }
+
+    dispatchReceiverParameter = from.dispatchReceiverParameter?.copyTo(this)
+    extensionReceiverParameter = from.extensionReceiverParameter?.copyTo(this)
+
+    val shift = valueParameters.size
+    valueParameters += from.valueParameters.map { it.copyTo(this, shift) }
+
+    assert(typeParameters.isEmpty())
+    from.typeParameters.mapTo(typeParameters) {it.copyTo(this) }
 }
 
 
@@ -381,7 +504,6 @@ fun IrClass.setSuperSymbolsAndAddFakeOverrides(superTypes: List<IrType>) {
             error("override conflict in synthesized class ${irClass.descriptor}:\n  $fromSuper\n  $fromCurrent")
         }
     }
-
     unoverriddenSuperMembers.keys.groupBy { it.name }.forEach { (name, members) ->
         OverridingUtil.generateOverridesInFunctionGroup(
             name,

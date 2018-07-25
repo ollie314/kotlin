@@ -21,7 +21,6 @@ import org.jetbrains.kotlin.ir.expressions.*
 import org.jetbrains.kotlin.ir.expressions.impl.IrCallImpl
 import org.jetbrains.kotlin.ir.symbols.IrFunctionSymbol
 import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
-import org.jetbrains.kotlin.ir.symbols.impl.IrFieldSymbolImpl
 import org.jetbrains.kotlin.ir.types.*
 import org.jetbrains.kotlin.ir.types.impl.originalKotlinType
 import org.jetbrains.kotlin.ir.util.isNullConst
@@ -315,17 +314,20 @@ class IntrinsicifyCallsLowering(private val context: JsIrBackendContext) : FileL
 
                 if (call is IrCall) {
                     val symbol = call.symbol
+                    val declaration = symbol.owner
 
-                    if (symbol.isDynamic() || symbol.isEffectivelyExternal()) {
+                    if (symbol.isDynamic() || declaration.isEffectivelyExternal()) {
                         when (call.origin) {
                             IrStatementOrigin.GET_PROPERTY -> {
-                                val fieldSymbol = IrFieldSymbolImpl((symbol.descriptor as PropertyAccessorDescriptor).correspondingProperty)
+//                                val fieldSymbol = IrFieldSymbolImpl((symbol.descriptor as PropertyAccessorDescriptor).correspondingProperty)
+                                val fieldSymbol = context.symbolTable.lazyWrapper.referenceField((symbol.descriptor as PropertyAccessorDescriptor).correspondingProperty)
                                 return JsIrBuilder.buildGetField(fieldSymbol, call.dispatchReceiver, type = call.type)
                             }
 
                             // assignment to a property
                             IrStatementOrigin.EQ -> {
-                                val fieldSymbol = IrFieldSymbolImpl((symbol.descriptor as PropertyAccessorDescriptor).correspondingProperty)
+//                                val fieldSymbol = IrFieldSymbolImpl((symbol.descriptor as PropertyAccessorDescriptor).correspondingProperty)
+                                val fieldSymbol = context.symbolTable.lazyWrapper.referenceField((symbol.descriptor as PropertyAccessorDescriptor).correspondingProperty)
                                 return JsIrBuilder.buildSetField(fieldSymbol, call.dispatchReceiver, call.getValueArgument(0)!!, call.type)
 
                             }
@@ -413,7 +415,7 @@ class IntrinsicifyCallsLowering(private val context: JsIrBackendContext) : FileL
                 it.name == Name.identifier("equals")
                         && it.valueParameters.size == 1
                         && rhs.isSubtypeOf(it.valueParameters[0].type)
-                        && !it.descriptor.isFakeOverriddenFromAny()
+                        && !it./*descriptor.*/isFakeOverriddenFromAny()
             }
             .maxWith(  // Find the most specific function
                 Comparator { f1, f2 ->
@@ -488,7 +490,7 @@ class IntrinsicifyCallsLowering(private val context: JsIrBackendContext) : FileL
             is IdentityOperator -> irCall(call, intrinsics.jsEqeqeq.symbol)
             is EqualityOperator -> irCall(call, intrinsics.jsEqeq.symbol)
             is RuntimeFunctionCall -> irCall(call, intrinsics.jsEquals, true)
-            is RuntimeOrMethodCall -> if (symbol.owner.descriptor.isFakeOverriddenFromAny()) {
+            is RuntimeOrMethodCall -> if (symbol.owner.isFakeOverriddenFromAny()) {
                 if (call.isSuperToAny()) {
                     irCall(call, intrinsics.jsEqeqeq.symbol, dispatchReceiverAsFirstArgument = true)
                 } else {

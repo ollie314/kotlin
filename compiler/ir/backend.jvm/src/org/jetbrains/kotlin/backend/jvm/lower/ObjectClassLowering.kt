@@ -47,7 +47,7 @@ class ObjectClassLowering(val context: JvmBackendContext) : IrElementTransformer
     private fun process(irClass: IrClass) {
         if (!irClass.isObject) return
 
-        val publicInstance = context.descriptorsFactory.getSymbolForObjectInstance(irClass.symbol)
+        val publicInstanceField = context.descriptorsFactory.getSymbolForObjectInstance(irClass)
 
         val constructor = irClass.descriptor.unsubstitutedPrimaryConstructor
                 ?: throw AssertionError("Object should have a primary constructor: ${irClass.descriptor}")
@@ -55,7 +55,7 @@ class ObjectClassLowering(val context: JvmBackendContext) : IrElementTransformer
         val publicInstanceOwner = if (irClass.descriptor.isCompanionObject) parentScope!!.irElement as IrDeclarationContainer else irClass
         if (isCompanionObjectInInterfaceNotIntrinsic(irClass.descriptor)) {
             // TODO rename to $$INSTANCE
-            val privateInstance = publicInstance.descriptor.copy(
+            val privateInstance = publicInstanceField.descriptor.copy(
                 irClass.descriptor,
                 Modality.FINAL,
                 Visibilities.PROTECTED/*TODO package local*/,
@@ -64,15 +64,21 @@ class ObjectClassLowering(val context: JvmBackendContext) : IrElementTransformer
             ) as PropertyDescriptor
             privateInstance.name
             val field = createInstanceFieldWithInitializer(IrFieldSymbolImpl(privateInstance), constructor, irClass, irClass.defaultType)
-            createFieldWithCustomInitializer(
-                publicInstance,
-                IrGetFieldImpl(UNDEFINED_OFFSET, UNDEFINED_OFFSET, field.symbol, irClass.defaultType),
-                publicInstanceOwner,
-                irClass.defaultType
-            )
+            publicInstanceField.initializer =
+                    IrExpressionBodyImpl(IrGetFieldImpl(UNDEFINED_OFFSET, UNDEFINED_OFFSET, field.symbol, irClass.defaultType))
+//            createFieldWithCustomInitializer(
+//                publicInstanceSymbol,
+//                IrGetFieldImpl(UNDEFINED_OFFSET, UNDEFINED_OFFSET, field.symbol, irClass.defaultType),
+//                publicInstanceOwner,
+//                irClass.defaultType
+//            )
         } else {
-            createInstanceFieldWithInitializer(publicInstance, constructor, publicInstanceOwner, irClass.defaultType)
+            val constructorCall = IrCallImpl(UNDEFINED_OFFSET, UNDEFINED_OFFSET, irClass.defaultType, constructor, 0)
+            publicInstanceField.initializer = IrExpressionBodyImpl(constructorCall)
+//            createInstanceFieldWithInitializer(publicInstanceSymbol, constructor, publicInstanceOwner, irClass.defaultType)
         }
+
+        publicInstanceOwner.declarations += publicInstanceField
     }
 
     private fun createInstanceFieldWithInitializer(

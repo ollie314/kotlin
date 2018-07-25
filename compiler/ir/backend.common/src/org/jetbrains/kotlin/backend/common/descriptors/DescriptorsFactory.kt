@@ -5,16 +5,13 @@
 
 package org.jetbrains.kotlin.backend.common.descriptors
 
-import org.jetbrains.kotlin.ir.declarations.IrClass
-import org.jetbrains.kotlin.ir.declarations.IrConstructor
-import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
-import org.jetbrains.kotlin.ir.symbols.IrConstructorSymbol
-import org.jetbrains.kotlin.ir.symbols.IrEnumEntrySymbol
-import org.jetbrains.kotlin.ir.symbols.IrFieldSymbol
+import org.jetbrains.kotlin.ir.declarations.*
 
 interface DescriptorsFactory {
-    fun getSymbolForEnumEntry(enumEntry: IrEnumEntrySymbol): IrFieldSymbol
-    fun getOuterThisFieldSymbol(innerClass: IrClass): IrFieldSymbol
-    fun getInnerClassConstructorWithOuterThisParameter(innerClassConstructor: IrConstructor): IrConstructorSymbol
-    fun getSymbolForObjectInstance(singleton: IrClassSymbol): IrFieldSymbol
+    object FIELD_FOR_OUTER_THIS : IrDeclarationOriginImpl("FIELD_FOR_OUTER_THIS")
+
+    fun getSymbolForEnumEntry(enumEntry: IrEnumEntry): IrField
+    fun getOuterThisFieldSymbol(innerClass: IrClass): IrField
+    fun getInnerClassConstructorWithOuterThisParameter(innerClassConstructor: IrConstructor): IrConstructor
+    fun getSymbolForObjectInstance(singleton: IrClass): IrField
 }
