@@ -25,7 +25,7 @@ private fun isInterfaceImpl(ctor: dynamic, iface: dynamic): Boolean {
     var superConstructor = superPrototype != null ? superPrototype.constructor : null;
     return superConstructor != null && self_0(superConstructor, iface);
     """
-    ).unsafeCast<Boolean>()
+    )
 }
 
 public fun isInterface(obj: dynamic, iface: dynamic): Boolean {
@@ -72,7 +72,7 @@ public fun isInterface(ctor: dynamic, IType: dynamic): Boolean {
 }
 */
 
-fun typeOf(obj: dynamic) = js("typeof obj").unsafeCast<String>()
+fun typeOf(obj: dynamic): String = js("typeof obj")
 
 fun isObject(obj: dynamic): Boolean {
     val objTypeOf = typeOf(obj)
@@ -82,18 +82,18 @@ fun isObject(obj: dynamic): Boolean {
         "number" -> true
         "boolean" -> true
         "function" -> true
-        else -> js("obj instanceof Object").unsafeCast<Boolean>()
+        else -> js("obj instanceof Object")
     }
 }
 
 public fun isArray(obj: Any): Boolean {
-    return js("Array.isArray(obj)").unsafeCast<Boolean>()
+    return js("Array.isArray(obj)")
 }
 
 public fun isArrayish(o: dynamic) =
-    isArray(o) || js("ArrayBuffer.isView(o)").unsafeCast<Boolean>()
+    isArray(o) || js("ArrayBuffer.isView(o)")
 
 
 public fun isChar(c: Any): Boolean {
-    return js("throw Error(\"isChar is not implemented\")").unsafeCast<Boolean>()
+    return js("throw Error(\"isChar is not implemented\")")
 }

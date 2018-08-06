@@ -21,11 +21,11 @@ fun compareTo(a: dynamic, b: dynamic): Int {
     }
 
     // TODO: Replace to a.unsafeCast<Comparable<*>>().compareTo(b) when bridge is implemented
-    return js("a.compareTo(b)").unsafeCast<Int>()
+    return js("a.compareTo(b)")
 }
 
 fun primitiveCompareTo(a: dynamic, b: dynamic): Int =
-    js("a < b ? -1 : a > b ? 1 : 0").unsafeCast<Int>()
+    js("a < b ? -1 : a > b ? 1 : 0")
 
 fun doubleCompareTo(a: dynamic, b: dynamic): Int =
     js("""
@@ -40,4 +40,4 @@ fun doubleCompareTo(a: dynamic, b: dynamic): Int =
     }
 
     return a !== a ? (b !== b ? 0 : 1) : -1
-    """).unsafeCast<Int>()
+    """)

@@ -57,7 +57,7 @@ public class Char(value: Int) : Comparable<Char> {
 
     override fun toString(): String {
         val value = value
-        return js("String.fromCharCode(value)").unsafeCast<String>()
+        return js("String.fromCharCode(value)")
     }
 
     companion object {
