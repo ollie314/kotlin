@@ -251,9 +251,10 @@ public fun <@kotlin.internal.OnlyInputTypes T> Iterable<T>.indexOf(element: T): 
     if (this is List) return this.indexOf(element)
     var index = 0
     for (item in this) {
+        checkIndexOverflow(index)
         if (element == item)
             return index
-        checkIndexOverflow(index++)
+        index++
     }
     return -1
 }
@@ -272,9 +273,10 @@ public fun <@kotlin.internal.OnlyInputTypes T> List<T>.indexOf(element: T): Int 
 public inline fun <T> Iterable<T>.indexOfFirst(predicate: (T) -> Boolean): Int {
     var index = 0
     for (item in this) {
+        checkIndexOverflow(index)
         if (predicate(item))
             return index
-        checkIndexOverflow(index++)
+        index++
     }
     return -1
 }
@@ -285,9 +287,10 @@ public inline fun <T> Iterable<T>.indexOfFirst(predicate: (T) -> Boolean): Int {
 public inline fun <T> List<T>.indexOfFirst(predicate: (T) -> Boolean): Int {
     var index = 0
     for (item in this) {
+        checkIndexOverflow(index)
         if (predicate(item))
             return index
-        checkIndexOverflow(index++)
+        index++
     }
     return -1
 }
@@ -299,9 +302,10 @@ public inline fun <T> Iterable<T>.indexOfLast(predicate: (T) -> Boolean): Int {
     var lastIndex = -1
     var index = 0
     for (item in this) {
+        checkIndexOverflow(index)
         if (predicate(item))
             lastIndex = index
-        checkIndexOverflow(index++)
+        index++
     }
     return lastIndex
 }
@@ -387,9 +391,10 @@ public fun <@kotlin.internal.OnlyInputTypes T> Iterable<T>.lastIndexOf(element: 
     var lastIndex = -1
     var index = 0
     for (item in this) {
+        checkIndexOverflow(index)
         if (element == item)
             lastIndex = index
-        checkIndexOverflow(index++)
+        index++
     }
     return lastIndex
 }

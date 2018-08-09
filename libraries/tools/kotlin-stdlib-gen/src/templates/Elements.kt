@@ -52,9 +52,10 @@ object Elements : TemplateGroupBase() {
             ${if (f == Iterables) "if (this is List) return this.indexOf(element)" else ""}
             var index = 0
             for (item in this) {
+                checkIndexOverflow(index)
                 if (element == item)
                     return index
-                checkIndexOverflow(index++)
+                index++
             }
             return -1
             """
@@ -106,9 +107,10 @@ object Elements : TemplateGroupBase() {
             var lastIndex = -1
             var index = 0
             for (item in this) {
+                checkIndexOverflow(index)
                 if (element == item)
                     lastIndex = index
-                checkIndexOverflow(index++)
+                index++
             }
             return lastIndex
             """
@@ -157,9 +159,10 @@ object Elements : TemplateGroupBase() {
             """
             var index = 0
             for (item in this) {
+                checkIndexOverflow(index)
                 if (predicate(item))
                     return index
-                checkIndexOverflow(index++)
+                index++
             }
             return -1
             """
@@ -190,9 +193,10 @@ object Elements : TemplateGroupBase() {
             var lastIndex = -1
             var index = 0
             for (item in this) {
+                checkIndexOverflow(index)
                 if (predicate(item))
                     lastIndex = index
-                checkIndexOverflow(index++)
+                index++
             }
             return lastIndex
             """

@@ -146,9 +146,10 @@ public inline fun <T> Sequence<T>.firstOrNull(predicate: (T) -> Boolean): T? {
 public fun <@kotlin.internal.OnlyInputTypes T> Sequence<T>.indexOf(element: T): Int {
     var index = 0
     for (item in this) {
+        checkIndexOverflow(index)
         if (element == item)
             return index
-        checkIndexOverflow(index++)
+        index++
     }
     return -1
 }
@@ -161,9 +162,10 @@ public fun <@kotlin.internal.OnlyInputTypes T> Sequence<T>.indexOf(element: T): 
 public inline fun <T> Sequence<T>.indexOfFirst(predicate: (T) -> Boolean): Int {
     var index = 0
     for (item in this) {
+        checkIndexOverflow(index)
         if (predicate(item))
             return index
-        checkIndexOverflow(index++)
+        index++
     }
     return -1
 }
@@ -177,9 +179,10 @@ public inline fun <T> Sequence<T>.indexOfLast(predicate: (T) -> Boolean): Int {
     var lastIndex = -1
     var index = 0
     for (item in this) {
+        checkIndexOverflow(index)
         if (predicate(item))
             lastIndex = index
-        checkIndexOverflow(index++)
+        index++
     }
     return lastIndex
 }
@@ -229,9 +232,10 @@ public fun <@kotlin.internal.OnlyInputTypes T> Sequence<T>.lastIndexOf(element: 
     var lastIndex = -1
     var index = 0
     for (item in this) {
+        checkIndexOverflow(index)
         if (element == item)
             lastIndex = index
-        checkIndexOverflow(index++)
+        index++
     }
     return lastIndex
 }
