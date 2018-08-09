@@ -154,9 +154,6 @@ internal actual inline fun checkIndexOverflow(index: Int): Int {
 }
 
 @PublishedApi
-internal fun throwIndexOverflow() { throw IndexOutOfBoundsException("Index overflow has happened.") }
-
-@PublishedApi
 @InlineOnly
 internal actual inline fun checkCountOverflow(count: Int): Int {
     if (count < 0) {
@@ -165,5 +162,3 @@ internal actual inline fun checkCountOverflow(count: Int): Int {
     return count
 }
 
-@PublishedApi
-internal fun throwCountOverflow() { throw IndexOutOfBoundsException("Count overflow has happened.") }

@@ -40,11 +40,13 @@ class IndexOverflowJVMTest {
         }
 
         fun assertIndexOverflow(f: () -> Unit) {
-            assertFailsWith<IndexOutOfBoundsException>(block = f)
+            val ex = assertFailsWith<ArithmeticException>(block = f)
+            assertTrue(ex.message!!.contains("index", ignoreCase = true))
         }
 
         fun assertCountOverflow(f: () -> Unit) {
-            assertFailsWith<IndexOutOfBoundsException>(block = f)
+            val ex = assertFailsWith<ArithmeticException>(block = f)
+            assertTrue(ex.message!!.contains("count", ignoreCase = true))
         }
 
         fun checkIndexPositive(index: Int) {
