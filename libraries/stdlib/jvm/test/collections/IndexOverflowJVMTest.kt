@@ -18,15 +18,18 @@ class IndexOverflowJVMTest {
 
 
     companion object {
-        fun <T> repeatInfinite(value: T): Sequence<T> = Sequence {
+        // by default count is one greater than Int.MAX_VALUE
+        fun <T> repeatCounted(value: T, count: Long = 1L shl 31): Sequence<T> = Sequence {
             object : Iterator<T> {
-                override fun hasNext(): Boolean = true
-                override fun next(): T = value
+                var counter = count
+                override fun hasNext(): Boolean = counter > 0
+                override fun next(): T = value.also { counter-- }
             }
         }
 
-        val infiniteSequence = repeatInfinite("k")
-        val infiniteIterable = infiniteSequence.asIterable()
+        val maxIndexSequence = repeatCounted("k", (1L shl 31) + 1) // here the last index is one greater than Int.MAX_VALUE
+        val maxIndexIterable = maxIndexSequence.asIterable()
+
 
         val longCountSequence = Sequence {
             object : Iterator<Long> {
@@ -35,8 +38,112 @@ class IndexOverflowJVMTest {
                 override fun next(): Long = counter++
             }
         }
+
+        fun assertIndexOverflow(f: () -> Unit) {
+            assertFailsWith<IndexOutOfBoundsException>(block = f)
+        }
+
+        fun assertCountOverflow(f: () -> Unit) {
+            assertFailsWith<IndexOutOfBoundsException>(block = f)
+        }
+
+        fun checkIndexPositive(index: Int) {
+            if (index < 0) fail("Encountered negative index")
+        }
     }
 
+    @Test
+    fun indexOfOverflowSequence() {
+        assertIndexOverflow { maxIndexSequence.indexOf("j") }
+        assertIndexOverflow { maxIndexSequence.lastIndexOf("k") }
+        assertIndexOverflow { maxIndexSequence.indexOfFirst { false } }
+        assertIndexOverflow { maxIndexSequence.indexOfLast { false } }
+    }
+
+    @Test
+    fun indexOfOverflowIterable() {
+        assertIndexOverflow { maxIndexIterable.indexOf("j") }
+        assertIndexOverflow { maxIndexIterable.lastIndexOf("k") }
+        assertIndexOverflow { maxIndexIterable.indexOfFirst { false } }
+        assertIndexOverflow { maxIndexIterable.indexOfLast { false } }
+    }
+
+
+    @Test
+    fun forEachIndexedOverflow() {
+        assertIndexOverflow { maxIndexSequence.forEachIndexed { index, _ -> checkIndexPositive(index) } }
+        assertIndexOverflow { maxIndexIterable.forEachIndexed { index, _ -> checkIndexPositive(index) } }
+    }
+
+    @Test
+    fun withIndexOverflow() {
+        assertIndexOverflow { maxIndexSequence.withIndex().forEach { (index, _) -> checkIndexPositive(index) } }
+        assertIndexOverflow { maxIndexIterable.withIndex().forEach { (index, _) -> checkIndexPositive(index) } }
+    }
+
+
+    @Test
+    fun countOverflow() {
+        assertCountOverflow { repeatCounted("k").count() }
+        assertCountOverflow { repeatCounted("k").count { true } }
+        assertCountOverflow { repeatCounted("k").asIterable().count() }
+        assertCountOverflow { repeatCounted("k").asIterable().count { true } }
+    }
+
+    @Test
+    fun averageCountOverflow() {
+        assertCountOverflow { repeatCounted(1.0).average() }
+        assertCountOverflow { repeatCounted(1L).asIterable().average() }
+    }
+
+
+    private class CountingCollection<T> : AbstractMutableCollection<T>() {
+        private var _size = 0
+
+        override fun add(element: T): Boolean {
+            if (_size < 0) error("Collection is too long")
+            _size++
+            return true
+        }
+
+        override val size: Int get() = _size
+
+        override fun iterator(): MutableIterator<T> = error("not implemented")
+    }
+
+    @Test
+    fun mapIndexedOverflow() {
+        assertIndexOverflow { maxIndexSequence.mapIndexed { index, _ -> checkIndexPositive(index) }.forEach { } }
+        assertIndexOverflow { maxIndexSequence.mapIndexedTo(CountingCollection()) { index, _ -> checkIndexPositive(index) } }
+        assertIndexOverflow { maxIndexIterable.mapIndexedTo(CountingCollection()) { index, _ -> checkIndexPositive(index) } }
+    }
+
+    @Test
+    fun mapNotNullIndexedOverflow() {
+        assertIndexOverflow { maxIndexSequence.mapIndexedNotNull { index, _ -> checkIndexPositive(index) }.forEach { } }
+        assertIndexOverflow { maxIndexSequence.mapIndexedNotNullTo(CountingCollection()) { index, _ -> checkIndexPositive(index) } }
+        assertIndexOverflow { maxIndexIterable.mapIndexedNotNullTo(CountingCollection()) { index, _ -> checkIndexPositive(index) } }
+    }
+
+    @Test
+    fun filterIndexedOverflow() {
+        assertIndexOverflow { maxIndexSequence.filterIndexed { index, _ -> checkIndexPositive(index); true }.forEach { } }
+        assertIndexOverflow { maxIndexSequence.filterIndexedTo(CountingCollection()) { index, _ -> checkIndexPositive(index); true } }
+        assertIndexOverflow { maxIndexIterable.filterIndexedTo(CountingCollection()) { index, _ -> checkIndexPositive(index); true } }
+    }
+
+
+    @Test
+    fun foldIndexedOverflow() {
+        assertIndexOverflow { maxIndexSequence.foldIndexed("") { index, acc, s -> checkIndexPositive(index); s } }
+        assertIndexOverflow { maxIndexIterable.foldIndexed("") { index, acc, s -> checkIndexPositive(index); s } }
+    }
+
+    @Test
+    fun reduceIndexedOverflow() {
+        assertIndexOverflow { maxIndexSequence.reduceIndexed { index, acc, s -> checkIndexPositive(index); s } }
+        assertIndexOverflow { maxIndexIterable.reduceIndexed { index, acc, s -> checkIndexPositive(index); s } }
+    }
 
 
     @Test

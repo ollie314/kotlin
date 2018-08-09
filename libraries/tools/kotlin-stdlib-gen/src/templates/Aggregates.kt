@@ -162,7 +162,7 @@ object Aggregates : TemplateGroupBase() {
                 else -> ""
             }}
             var count = 0
-            for (element in this) if (predicate(element)) count++
+            for (element in this) if (predicate(element)) checkCountOverflow(++count)
             return count
             """
         }
@@ -178,7 +178,7 @@ object Aggregates : TemplateGroupBase() {
             """
             ${if (f == Iterables) "if (this is Collection) return size" else ""}
             var count = 0
-            for (element in this) count++
+            for (element in this) checkCountOverflow(++count)
             return count
             """
         }
@@ -477,7 +477,7 @@ object Aggregates : TemplateGroupBase() {
             """
             var index = 0
             var accumulator = initial
-            for (element in this) accumulator = operation(index++, accumulator, element)
+            for (element in this) accumulator = operation(checkIndexOverflow(index++), accumulator, element)
             return accumulator
             """
         }
@@ -624,7 +624,7 @@ object Aggregates : TemplateGroupBase() {
             var index = 1
             var accumulator: S = iterator.next()
             while (iterator.hasNext()) {
-                accumulator = operation(index++, accumulator, iterator.next())
+                accumulator = operation(checkIndexOverflow(index++), accumulator, iterator.next())
             }
             return accumulator
             """
@@ -901,7 +901,7 @@ object Aggregates : TemplateGroupBase() {
         body {
             """
             var index = 0
-            for (item in this) action(index++, item)
+            for (item in this) action(checkIndexOverflow(index++), item)
             """
         }
     }

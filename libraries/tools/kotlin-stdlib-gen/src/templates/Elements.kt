@@ -54,7 +54,7 @@ object Elements : TemplateGroupBase() {
             for (item in this) {
                 if (element == item)
                     return index
-                index++
+                checkIndexOverflow(index++)
             }
             return -1
             """
@@ -108,7 +108,7 @@ object Elements : TemplateGroupBase() {
             for (item in this) {
                 if (element == item)
                     lastIndex = index
-                index++
+                checkIndexOverflow(index++)
             }
             return lastIndex
             """
@@ -159,7 +159,7 @@ object Elements : TemplateGroupBase() {
             for (item in this) {
                 if (predicate(item))
                     return index
-                index++
+                checkIndexOverflow(index++)
             }
             return -1
             """
@@ -192,7 +192,7 @@ object Elements : TemplateGroupBase() {
             for (item in this) {
                 if (predicate(item))
                     lastIndex = index
-                index++
+                checkIndexOverflow(index++)
             }
             return lastIndex
             """

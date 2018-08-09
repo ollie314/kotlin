@@ -46,7 +46,7 @@ object Numeric : TemplateGroupBase() {
             var count: Int = 0
             for (element in this) {
                 sum += element
-                count += 1
+                checkCountOverflow(++count)
             }
             return if (count == 0) Double.NaN else sum / count
             """

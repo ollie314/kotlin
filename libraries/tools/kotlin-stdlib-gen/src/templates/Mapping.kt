@@ -207,7 +207,7 @@ object Mapping : TemplateGroupBase() {
             """
                 var index = 0
                 for (item in this)
-                    destination.add(transform(index++, item))
+                    destination.add(transform(checkIndexOverflow(index++), item))
                 return destination
             """
         }
