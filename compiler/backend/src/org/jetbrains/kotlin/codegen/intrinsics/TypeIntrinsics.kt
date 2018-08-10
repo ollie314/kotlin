@@ -179,7 +179,7 @@ object TypeIntrinsics {
     private fun getSuspendFunctionTypeArity(jetType: KotlinType): Int {
         val classFqName = getClassFqName(jetType) ?: return -1
         val match = KOTLIN_SUSPEND_FUNCTION_INTERFACE_REGEX.find(classFqName.asString()) ?: return -1
-        return Integer.valueOf(match.groups[1]!!.value + 1)
+        return Integer.valueOf(match.groups[1]!!.value) + 1
     }
 
     private fun typeIntrinsicNode(methodName: String, methodDescriptor: String): MethodInsnNode =

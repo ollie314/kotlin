@@ -57,6 +57,9 @@ const val INVOKE_SUSPEND_METHOD_NAME = "invokeSuspend"
 const val DATA_FIELD_NAME = "data"
 const val EXCEPTION_FIELD_NAME = "exception"
 
+val SUSPEND_FUNCTION_FQ_NAME = DescriptorUtils.COROUTINES_PACKAGE_FQ_NAME_RELEASE.child(Name.identifier("jvm"))
+    .child(Name.identifier("internal")).child(Name.identifier("SuspendFunction"))
+
 fun LanguageVersionSettings.isResumeImplMethodName(name: String) =
     if (isReleaseCoroutines())
         name == INVOKE_SUSPEND_METHOD_NAME
