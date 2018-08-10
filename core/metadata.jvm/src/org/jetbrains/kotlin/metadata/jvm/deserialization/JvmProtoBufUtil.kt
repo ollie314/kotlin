@@ -104,8 +104,7 @@ object JvmProtoBufUtil {
             typeTable: TypeTable
     ): JvmMemberSignature.Field? {
         val signature = proto.getExtensionOrNull(JvmProtoBuf.propertySignature) ?: return null
-        val field =
-                if (signature.hasField()) signature.field else null
+        val field = if (signature.hasField()) signature.field else return null
 
         val name = if (field != null && field.hasName()) field.name else proto.name
         val desc =
