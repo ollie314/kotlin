@@ -159,13 +159,13 @@ object Elements : TemplateGroupBase() {
             """
             var index = 0
             for (item in this) {
-                checkIndexOverflow(index)
+                ${if (f != Lists) "checkIndexOverflow(index)" else ""}
                 if (predicate(item))
                     return index
                 index++
             }
             return -1
-            """
+            """.lines().filterNot { it.isBlank() }.joinToString("\n")
         }
 
         body(CharSequences, ArraysOfPrimitives, ArraysOfObjects) {

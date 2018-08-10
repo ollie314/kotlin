@@ -8437,7 +8437,7 @@ public inline fun <T, R : Any, C : MutableCollection<in R>> Array<out T>.mapInde
 public inline fun <T, R, C : MutableCollection<in R>> Array<out T>.mapIndexedTo(destination: C, transform: (index: Int, T) -> R): C {
     var index = 0
     for (item in this)
-        destination.add(transform(checkIndexOverflow(index++), item))
+        destination.add(transform(index++, item))
     return destination
 }
 
@@ -8450,7 +8450,7 @@ public inline fun <T, R, C : MutableCollection<in R>> Array<out T>.mapIndexedTo(
 public inline fun <R, C : MutableCollection<in R>> ByteArray.mapIndexedTo(destination: C, transform: (index: Int, Byte) -> R): C {
     var index = 0
     for (item in this)
-        destination.add(transform(checkIndexOverflow(index++), item))
+        destination.add(transform(index++, item))
     return destination
 }
 
@@ -8463,7 +8463,7 @@ public inline fun <R, C : MutableCollection<in R>> ByteArray.mapIndexedTo(destin
 public inline fun <R, C : MutableCollection<in R>> ShortArray.mapIndexedTo(destination: C, transform: (index: Int, Short) -> R): C {
     var index = 0
     for (item in this)
-        destination.add(transform(checkIndexOverflow(index++), item))
+        destination.add(transform(index++, item))
     return destination
 }
 
@@ -8476,7 +8476,7 @@ public inline fun <R, C : MutableCollection<in R>> ShortArray.mapIndexedTo(desti
 public inline fun <R, C : MutableCollection<in R>> IntArray.mapIndexedTo(destination: C, transform: (index: Int, Int) -> R): C {
     var index = 0
     for (item in this)
-        destination.add(transform(checkIndexOverflow(index++), item))
+        destination.add(transform(index++, item))
     return destination
 }
 
@@ -8489,7 +8489,7 @@ public inline fun <R, C : MutableCollection<in R>> IntArray.mapIndexedTo(destina
 public inline fun <R, C : MutableCollection<in R>> LongArray.mapIndexedTo(destination: C, transform: (index: Int, Long) -> R): C {
     var index = 0
     for (item in this)
-        destination.add(transform(checkIndexOverflow(index++), item))
+        destination.add(transform(index++, item))
     return destination
 }
 
@@ -8502,7 +8502,7 @@ public inline fun <R, C : MutableCollection<in R>> LongArray.mapIndexedTo(destin
 public inline fun <R, C : MutableCollection<in R>> FloatArray.mapIndexedTo(destination: C, transform: (index: Int, Float) -> R): C {
     var index = 0
     for (item in this)
-        destination.add(transform(checkIndexOverflow(index++), item))
+        destination.add(transform(index++, item))
     return destination
 }
 
@@ -8515,7 +8515,7 @@ public inline fun <R, C : MutableCollection<in R>> FloatArray.mapIndexedTo(desti
 public inline fun <R, C : MutableCollection<in R>> DoubleArray.mapIndexedTo(destination: C, transform: (index: Int, Double) -> R): C {
     var index = 0
     for (item in this)
-        destination.add(transform(checkIndexOverflow(index++), item))
+        destination.add(transform(index++, item))
     return destination
 }
 
@@ -8528,7 +8528,7 @@ public inline fun <R, C : MutableCollection<in R>> DoubleArray.mapIndexedTo(dest
 public inline fun <R, C : MutableCollection<in R>> BooleanArray.mapIndexedTo(destination: C, transform: (index: Int, Boolean) -> R): C {
     var index = 0
     for (item in this)
-        destination.add(transform(checkIndexOverflow(index++), item))
+        destination.add(transform(index++, item))
     return destination
 }
 
@@ -8541,7 +8541,7 @@ public inline fun <R, C : MutableCollection<in R>> BooleanArray.mapIndexedTo(des
 public inline fun <R, C : MutableCollection<in R>> CharArray.mapIndexedTo(destination: C, transform: (index: Int, Char) -> R): C {
     var index = 0
     for (item in this)
-        destination.add(transform(checkIndexOverflow(index++), item))
+        destination.add(transform(index++, item))
     return destination
 }
 
@@ -9701,7 +9701,7 @@ public inline fun CharArray.count(): Int {
  */
 public inline fun <T> Array<out T>.count(predicate: (T) -> Boolean): Int {
     var count = 0
-    for (element in this) if (predicate(element)) checkCountOverflow(++count)
+    for (element in this) if (predicate(element)) ++count
     return count
 }
 
@@ -9710,7 +9710,7 @@ public inline fun <T> Array<out T>.count(predicate: (T) -> Boolean): Int {
  */
 public inline fun ByteArray.count(predicate: (Byte) -> Boolean): Int {
     var count = 0
-    for (element in this) if (predicate(element)) checkCountOverflow(++count)
+    for (element in this) if (predicate(element)) ++count
     return count
 }
 
@@ -9719,7 +9719,7 @@ public inline fun ByteArray.count(predicate: (Byte) -> Boolean): Int {
  */
 public inline fun ShortArray.count(predicate: (Short) -> Boolean): Int {
     var count = 0
-    for (element in this) if (predicate(element)) checkCountOverflow(++count)
+    for (element in this) if (predicate(element)) ++count
     return count
 }
 
@@ -9728,7 +9728,7 @@ public inline fun ShortArray.count(predicate: (Short) -> Boolean): Int {
  */
 public inline fun IntArray.count(predicate: (Int) -> Boolean): Int {
     var count = 0
-    for (element in this) if (predicate(element)) checkCountOverflow(++count)
+    for (element in this) if (predicate(element)) ++count
     return count
 }
 
@@ -9737,7 +9737,7 @@ public inline fun IntArray.count(predicate: (Int) -> Boolean): Int {
  */
 public inline fun LongArray.count(predicate: (Long) -> Boolean): Int {
     var count = 0
-    for (element in this) if (predicate(element)) checkCountOverflow(++count)
+    for (element in this) if (predicate(element)) ++count
     return count
 }
 
@@ -9746,7 +9746,7 @@ public inline fun LongArray.count(predicate: (Long) -> Boolean): Int {
  */
 public inline fun FloatArray.count(predicate: (Float) -> Boolean): Int {
     var count = 0
-    for (element in this) if (predicate(element)) checkCountOverflow(++count)
+    for (element in this) if (predicate(element)) ++count
     return count
 }
 
@@ -9755,7 +9755,7 @@ public inline fun FloatArray.count(predicate: (Float) -> Boolean): Int {
  */
 public inline fun DoubleArray.count(predicate: (Double) -> Boolean): Int {
     var count = 0
-    for (element in this) if (predicate(element)) checkCountOverflow(++count)
+    for (element in this) if (predicate(element)) ++count
     return count
 }
 
@@ -9764,7 +9764,7 @@ public inline fun DoubleArray.count(predicate: (Double) -> Boolean): Int {
  */
 public inline fun BooleanArray.count(predicate: (Boolean) -> Boolean): Int {
     var count = 0
-    for (element in this) if (predicate(element)) checkCountOverflow(++count)
+    for (element in this) if (predicate(element)) ++count
     return count
 }
 
@@ -9773,7 +9773,7 @@ public inline fun BooleanArray.count(predicate: (Boolean) -> Boolean): Int {
  */
 public inline fun CharArray.count(predicate: (Char) -> Boolean): Int {
     var count = 0
-    for (element in this) if (predicate(element)) checkCountOverflow(++count)
+    for (element in this) if (predicate(element)) ++count
     return count
 }
 
@@ -9867,7 +9867,7 @@ public inline fun <R> CharArray.fold(initial: R, operation: (acc: R, Char) -> R)
 public inline fun <T, R> Array<out T>.foldIndexed(initial: R, operation: (index: Int, acc: R, T) -> R): R {
     var index = 0
     var accumulator = initial
-    for (element in this) accumulator = operation(checkIndexOverflow(index++), accumulator, element)
+    for (element in this) accumulator = operation(index++, accumulator, element)
     return accumulator
 }
 
@@ -9880,7 +9880,7 @@ public inline fun <T, R> Array<out T>.foldIndexed(initial: R, operation: (index:
 public inline fun <R> ByteArray.foldIndexed(initial: R, operation: (index: Int, acc: R, Byte) -> R): R {
     var index = 0
     var accumulator = initial
-    for (element in this) accumulator = operation(checkIndexOverflow(index++), accumulator, element)
+    for (element in this) accumulator = operation(index++, accumulator, element)
     return accumulator
 }
 
@@ -9893,7 +9893,7 @@ public inline fun <R> ByteArray.foldIndexed(initial: R, operation: (index: Int, 
 public inline fun <R> ShortArray.foldIndexed(initial: R, operation: (index: Int, acc: R, Short) -> R): R {
     var index = 0
     var accumulator = initial
-    for (element in this) accumulator = operation(checkIndexOverflow(index++), accumulator, element)
+    for (element in this) accumulator = operation(index++, accumulator, element)
     return accumulator
 }
 
@@ -9906,7 +9906,7 @@ public inline fun <R> ShortArray.foldIndexed(initial: R, operation: (index: Int,
 public inline fun <R> IntArray.foldIndexed(initial: R, operation: (index: Int, acc: R, Int) -> R): R {
     var index = 0
     var accumulator = initial
-    for (element in this) accumulator = operation(checkIndexOverflow(index++), accumulator, element)
+    for (element in this) accumulator = operation(index++, accumulator, element)
     return accumulator
 }
 
@@ -9919,7 +9919,7 @@ public inline fun <R> IntArray.foldIndexed(initial: R, operation: (index: Int, a
 public inline fun <R> LongArray.foldIndexed(initial: R, operation: (index: Int, acc: R, Long) -> R): R {
     var index = 0
     var accumulator = initial
-    for (element in this) accumulator = operation(checkIndexOverflow(index++), accumulator, element)
+    for (element in this) accumulator = operation(index++, accumulator, element)
     return accumulator
 }
 
@@ -9932,7 +9932,7 @@ public inline fun <R> LongArray.foldIndexed(initial: R, operation: (index: Int, 
 public inline fun <R> FloatArray.foldIndexed(initial: R, operation: (index: Int, acc: R, Float) -> R): R {
     var index = 0
     var accumulator = initial
-    for (element in this) accumulator = operation(checkIndexOverflow(index++), accumulator, element)
+    for (element in this) accumulator = operation(index++, accumulator, element)
     return accumulator
 }
 
@@ -9945,7 +9945,7 @@ public inline fun <R> FloatArray.foldIndexed(initial: R, operation: (index: Int,
 public inline fun <R> DoubleArray.foldIndexed(initial: R, operation: (index: Int, acc: R, Double) -> R): R {
     var index = 0
     var accumulator = initial
-    for (element in this) accumulator = operation(checkIndexOverflow(index++), accumulator, element)
+    for (element in this) accumulator = operation(index++, accumulator, element)
     return accumulator
 }
 
@@ -9958,7 +9958,7 @@ public inline fun <R> DoubleArray.foldIndexed(initial: R, operation: (index: Int
 public inline fun <R> BooleanArray.foldIndexed(initial: R, operation: (index: Int, acc: R, Boolean) -> R): R {
     var index = 0
     var accumulator = initial
-    for (element in this) accumulator = operation(checkIndexOverflow(index++), accumulator, element)
+    for (element in this) accumulator = operation(index++, accumulator, element)
     return accumulator
 }
 
@@ -9971,7 +9971,7 @@ public inline fun <R> BooleanArray.foldIndexed(initial: R, operation: (index: In
 public inline fun <R> CharArray.foldIndexed(initial: R, operation: (index: Int, acc: R, Char) -> R): R {
     var index = 0
     var accumulator = initial
-    for (element in this) accumulator = operation(checkIndexOverflow(index++), accumulator, element)
+    for (element in this) accumulator = operation(index++, accumulator, element)
     return accumulator
 }
 
@@ -10297,7 +10297,7 @@ public inline fun CharArray.forEach(action: (Char) -> Unit): Unit {
  */
 public inline fun <T> Array<out T>.forEachIndexed(action: (index: Int, T) -> Unit): Unit {
     var index = 0
-    for (item in this) action(checkIndexOverflow(index++), item)
+    for (item in this) action(index++, item)
 }
 
 /**
@@ -10307,7 +10307,7 @@ public inline fun <T> Array<out T>.forEachIndexed(action: (index: Int, T) -> Uni
  */
 public inline fun ByteArray.forEachIndexed(action: (index: Int, Byte) -> Unit): Unit {
     var index = 0
-    for (item in this) action(checkIndexOverflow(index++), item)
+    for (item in this) action(index++, item)
 }
 
 /**
@@ -10317,7 +10317,7 @@ public inline fun ByteArray.forEachIndexed(action: (index: Int, Byte) -> Unit): 
  */
 public inline fun ShortArray.forEachIndexed(action: (index: Int, Short) -> Unit): Unit {
     var index = 0
-    for (item in this) action(checkIndexOverflow(index++), item)
+    for (item in this) action(index++, item)
 }
 
 /**
@@ -10327,7 +10327,7 @@ public inline fun ShortArray.forEachIndexed(action: (index: Int, Short) -> Unit)
  */
 public inline fun IntArray.forEachIndexed(action: (index: Int, Int) -> Unit): Unit {
     var index = 0
-    for (item in this) action(checkIndexOverflow(index++), item)
+    for (item in this) action(index++, item)
 }
 
 /**
@@ -10337,7 +10337,7 @@ public inline fun IntArray.forEachIndexed(action: (index: Int, Int) -> Unit): Un
  */
 public inline fun LongArray.forEachIndexed(action: (index: Int, Long) -> Unit): Unit {
     var index = 0
-    for (item in this) action(checkIndexOverflow(index++), item)
+    for (item in this) action(index++, item)
 }
 
 /**
@@ -10347,7 +10347,7 @@ public inline fun LongArray.forEachIndexed(action: (index: Int, Long) -> Unit): 
  */
 public inline fun FloatArray.forEachIndexed(action: (index: Int, Float) -> Unit): Unit {
     var index = 0
-    for (item in this) action(checkIndexOverflow(index++), item)
+    for (item in this) action(index++, item)
 }
 
 /**
@@ -10357,7 +10357,7 @@ public inline fun FloatArray.forEachIndexed(action: (index: Int, Float) -> Unit)
  */
 public inline fun DoubleArray.forEachIndexed(action: (index: Int, Double) -> Unit): Unit {
     var index = 0
-    for (item in this) action(checkIndexOverflow(index++), item)
+    for (item in this) action(index++, item)
 }
 
 /**
@@ -10367,7 +10367,7 @@ public inline fun DoubleArray.forEachIndexed(action: (index: Int, Double) -> Uni
  */
 public inline fun BooleanArray.forEachIndexed(action: (index: Int, Boolean) -> Unit): Unit {
     var index = 0
-    for (item in this) action(checkIndexOverflow(index++), item)
+    for (item in this) action(index++, item)
 }
 
 /**
@@ -10377,7 +10377,7 @@ public inline fun BooleanArray.forEachIndexed(action: (index: Int, Boolean) -> U
  */
 public inline fun CharArray.forEachIndexed(action: (index: Int, Char) -> Unit): Unit {
     var index = 0
-    for (item in this) action(checkIndexOverflow(index++), item)
+    for (item in this) action(index++, item)
 }
 
 /**
@@ -13504,7 +13504,7 @@ public fun Array<out Byte>.average(): Double {
     var count: Int = 0
     for (element in this) {
         sum += element
-        checkCountOverflow(++count)
+        ++count
     }
     return if (count == 0) Double.NaN else sum / count
 }
@@ -13518,7 +13518,7 @@ public fun Array<out Short>.average(): Double {
     var count: Int = 0
     for (element in this) {
         sum += element
-        checkCountOverflow(++count)
+        ++count
     }
     return if (count == 0) Double.NaN else sum / count
 }
@@ -13532,7 +13532,7 @@ public fun Array<out Int>.average(): Double {
     var count: Int = 0
     for (element in this) {
         sum += element
-        checkCountOverflow(++count)
+        ++count
     }
     return if (count == 0) Double.NaN else sum / count
 }
@@ -13546,7 +13546,7 @@ public fun Array<out Long>.average(): Double {
     var count: Int = 0
     for (element in this) {
         sum += element
-        checkCountOverflow(++count)
+        ++count
     }
     return if (count == 0) Double.NaN else sum / count
 }
@@ -13560,7 +13560,7 @@ public fun Array<out Float>.average(): Double {
     var count: Int = 0
     for (element in this) {
         sum += element
-        checkCountOverflow(++count)
+        ++count
     }
     return if (count == 0) Double.NaN else sum / count
 }
@@ -13574,7 +13574,7 @@ public fun Array<out Double>.average(): Double {
     var count: Int = 0
     for (element in this) {
         sum += element
-        checkCountOverflow(++count)
+        ++count
     }
     return if (count == 0) Double.NaN else sum / count
 }
@@ -13587,7 +13587,7 @@ public fun ByteArray.average(): Double {
     var count: Int = 0
     for (element in this) {
         sum += element
-        checkCountOverflow(++count)
+        ++count
     }
     return if (count == 0) Double.NaN else sum / count
 }
@@ -13600,7 +13600,7 @@ public fun ShortArray.average(): Double {
     var count: Int = 0
     for (element in this) {
         sum += element
-        checkCountOverflow(++count)
+        ++count
     }
     return if (count == 0) Double.NaN else sum / count
 }
@@ -13613,7 +13613,7 @@ public fun IntArray.average(): Double {
     var count: Int = 0
     for (element in this) {
         sum += element
-        checkCountOverflow(++count)
+        ++count
     }
     return if (count == 0) Double.NaN else sum / count
 }
@@ -13626,7 +13626,7 @@ public fun LongArray.average(): Double {
     var count: Int = 0
     for (element in this) {
         sum += element
-        checkCountOverflow(++count)
+        ++count
     }
     return if (count == 0) Double.NaN else sum / count
 }
@@ -13639,7 +13639,7 @@ public fun FloatArray.average(): Double {
     var count: Int = 0
     for (element in this) {
         sum += element
-        checkCountOverflow(++count)
+        ++count
     }
     return if (count == 0) Double.NaN else sum / count
 }
@@ -13652,7 +13652,7 @@ public fun DoubleArray.average(): Double {
     var count: Int = 0
     for (element in this) {
         sum += element
-        checkCountOverflow(++count)
+        ++count
     }
     return if (count == 0) Double.NaN else sum / count
 }

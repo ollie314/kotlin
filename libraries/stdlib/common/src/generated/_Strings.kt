@@ -803,7 +803,7 @@ public inline fun <R : Any, C : MutableCollection<in R>> CharSequence.mapIndexed
 public inline fun <R, C : MutableCollection<in R>> CharSequence.mapIndexedTo(destination: C, transform: (index: Int, Char) -> R): C {
     var index = 0
     for (item in this)
-        destination.add(transform(checkIndexOverflow(index++), item))
+        destination.add(transform(index++, item))
     return destination
 }
 
@@ -883,7 +883,7 @@ public inline fun CharSequence.count(): Int {
  */
 public inline fun CharSequence.count(predicate: (Char) -> Boolean): Int {
     var count = 0
-    for (element in this) if (predicate(element)) checkCountOverflow(++count)
+    for (element in this) if (predicate(element)) ++count
     return count
 }
 
@@ -905,7 +905,7 @@ public inline fun <R> CharSequence.fold(initial: R, operation: (acc: R, Char) ->
 public inline fun <R> CharSequence.foldIndexed(initial: R, operation: (index: Int, acc: R, Char) -> R): R {
     var index = 0
     var accumulator = initial
-    for (element in this) accumulator = operation(checkIndexOverflow(index++), accumulator, element)
+    for (element in this) accumulator = operation(index++, accumulator, element)
     return accumulator
 }
 
@@ -951,7 +951,7 @@ public inline fun CharSequence.forEach(action: (Char) -> Unit): Unit {
  */
 public inline fun CharSequence.forEachIndexed(action: (index: Int, Char) -> Unit): Unit {
     var index = 0
-    for (item in this) action(checkIndexOverflow(index++), item)
+    for (item in this) action(index++, item)
 }
 
 /**

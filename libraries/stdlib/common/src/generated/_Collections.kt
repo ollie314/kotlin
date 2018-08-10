@@ -287,7 +287,6 @@ public inline fun <T> Iterable<T>.indexOfFirst(predicate: (T) -> Boolean): Int {
 public inline fun <T> List<T>.indexOfFirst(predicate: (T) -> Boolean): Int {
     var index = 0
     for (item in this) {
-        checkIndexOverflow(index)
         if (predicate(item))
             return index
         index++
