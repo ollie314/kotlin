@@ -4,8 +4,8 @@ apply plugin: 'kotlin'
 apply plugin: 'pill-configurable'
 
 configureJvm6Project(project)
-configureDist(project)
-configurePublishing(project)
+//configureDist(project)
+//configurePublishing(project)
 ext.javaHome = JDK_17
 
 pill {
@@ -44,9 +44,9 @@ artifacts {
     archives javadocJar
 }
 
-dist {
-    from (jar, sourcesJar)
-}
+//dist {
+//    from (jar, sourcesJar)
+//}
 
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {

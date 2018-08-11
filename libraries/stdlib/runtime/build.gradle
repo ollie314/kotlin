@@ -3,8 +3,8 @@ description 'Kotlin Runtime (deprecated, use kotlin-stdlib artifact instead)'
 apply plugin: 'kotlin'
 
 configureJvm6Project(project)
-configureDist(project)
-configurePublishing(project)
+//configureDist(project)
+//configurePublishing(project)
 
 dependencies {
     compile group: 'org.jetbrains', name: 'annotations', version:'13.0'
