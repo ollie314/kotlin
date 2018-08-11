@@ -38,6 +38,8 @@ class DefaultKotlinSourceSet(
     override val runtimeOnlyConfigurationName: String
         get() = disambiguateName("runtimeOnly")
 
+    val dependenciesMetadataConfigurationName: String = disambiguateName("dependenciesMetadata")
+
     override val kotlin: SourceDirectorySet = createDefaultSourceDirectorySet(name + " Kotlin source", fileResolver).apply {
         filter.include("**/*.java", "**/*.kt", "**/*.kts")
     }

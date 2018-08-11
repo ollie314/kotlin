@@ -8,6 +8,7 @@ package org.jetbrains.kotlin.gradle.plugin.sources
 import org.gradle.api.NamedDomainObjectFactory
 import org.gradle.api.Project
 import org.gradle.api.internal.file.FileResolver
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.plugin.source.KotlinSourceSet
 import java.io.File
 
@@ -47,6 +48,13 @@ internal class DefaultKotlinSourceSetFactory(
     override fun setUpSourceSetDefaults(sourceSet: DefaultKotlinSourceSet) {
         super.setUpSourceSetDefaults(sourceSet)
         sourceSet.resources.srcDir(File(defaultSourceLocation(sourceSet.name), "resources"))
+
+        project.configurations.maybeCreate(sourceSet.dependenciesMetadataConfigurationName).apply {
+            attributes.attribute(KotlinPlatformType.attribute, KotlinPlatformType.common)
+            extendsFrom(project.configurations.maybeCreate(sourceSet.apiConfigurationName))
+            extendsFrom(project.configurations.maybeCreate(sourceSet.implementationConfigurationName))
+            extendsFrom(project.configurations.maybeCreate(sourceSet.compileOnlyConfigurationName))
+        }
     }
 
     override fun doCreateSourceSet(name: String): DefaultKotlinSourceSet {

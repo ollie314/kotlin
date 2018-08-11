@@ -72,11 +72,16 @@ internal class KotlinMultiplatformPlugin(
 
         setUpConfigurationAttributes(project)
         configurePublishingWithMavenPublish(project)
+
+        // set up metadata publishing
+        targetsFromPreset.fromPreset(
+            KotlinMetadataTargetPreset(project, instantiator, fileResolver, buildOutputCleanupRegistry, kotlinPluginVersion),
+            "metadata"
+        )
     }
 
     fun setupDefaultPresets(project: Project) {
         with((project.kotlinExtension as KotlinMultiplatformExtension).presets) {
-            add(KotlinUniversalTargetPreset(project, instantiator, fileResolver, buildOutputCleanupRegistry, kotlinPluginVersion))
             add(KotlinJvmTargetPreset(project, instantiator, fileResolver, buildOutputCleanupRegistry, kotlinPluginVersion))
             add(KotlinJsTargetPreset(project, instantiator, fileResolver, buildOutputCleanupRegistry, kotlinPluginVersion))
             add(KotlinAndroidTargetPreset(project, kotlinPluginVersion))
