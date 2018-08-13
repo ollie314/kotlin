@@ -26,6 +26,11 @@ fun <T : JsNode> replaceNames(node: T, replaceMap: Map<JsName, JsExpression>): T
     return if (replaceMap.isEmpty()) node else NameReplacingVisitor(replaceMap).accept(node)!!
 }
 
+fun <T : JsNode> replaceNames2(node: T, replaceMap: Map<JsName, JsName>): T {
+    return if (replaceMap.isEmpty()) node else NameReplacingVisitor(replaceMap.mapValues { (_, v) -> v.makeRef() }).accept(node)!!
+}
+
+
 fun <T : JsNode> replaceThisReference(node: T, replacement: JsExpression) {
     ThisReplacingVisitor(replacement).accept(node)
 }
