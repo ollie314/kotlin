@@ -234,9 +234,10 @@ fun collectNameBindings(fragments: List<JsProgramFragment>): Map<JsName, String>
     val result = mutableMapOf<JsName, String>()
     for (fragment in fragments) {
         for (binding in fragment.nameBindings) {
-            result.putIfAbsent(binding.name, binding.key)?.let { currentKey ->
-                assert(currentKey == binding.key)
-            }
+            result[binding.name] = binding.key
+//            result.putIfAbsent(binding.name, binding.key)?.let { currentKey ->
+//                assert(currentKey == binding.key)
+//            }
         }
     }
     return result
