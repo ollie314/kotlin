@@ -467,9 +467,7 @@ open class WrappedPropertyDescriptor(
         TODO("not implemented")
     }
 
-    override fun getOverriddenDescriptors(): MutableCollection<out PropertyDescriptor> {
-        TODO("not implemented")
-    }
+    override fun getOverriddenDescriptors(): MutableCollection<out PropertyDescriptor> = mutableListOf()
 
     override fun copy(
         newOwner: DeclarationDescriptor?,

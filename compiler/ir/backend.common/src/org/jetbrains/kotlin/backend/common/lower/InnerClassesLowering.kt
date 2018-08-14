@@ -261,7 +261,17 @@ class InnerClassConstructorCallsLowering(val context: BackendContext) : BodyLowe
 
                 val newCallee = context.descriptorsFactory.getInnerClassConstructorWithOuterThisParameter(callee.owner)
 
-                val newReference = expression.run { IrFunctionReferenceImpl(startOffset, endOffset, type, newCallee, newCallee.descriptor, typeArgumentsCount, origin) }
+                val newReference = expression.run {
+                    IrFunctionReferenceImpl(
+                        startOffset,
+                        endOffset,
+                        type,
+                        newCallee.symbol,
+                        newCallee.descriptor,
+                        typeArgumentsCount,
+                        origin
+                    )
+                }
 
                 newReference.let {
                     it.dispatchReceiver = expression.dispatchReceiver

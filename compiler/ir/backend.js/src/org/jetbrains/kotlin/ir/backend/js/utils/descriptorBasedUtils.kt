@@ -10,10 +10,8 @@ import org.jetbrains.kotlin.descriptors.annotations.Annotations
 import org.jetbrains.kotlin.descriptors.impl.ValueParameterDescriptorImpl
 import org.jetbrains.kotlin.incremental.components.NoLookupLocation
 import org.jetbrains.kotlin.ir.declarations.*
-import org.jetbrains.kotlin.ir.symbols.IrClassifierSymbol
-import org.jetbrains.kotlin.ir.declarations.IrDeclaration
-import org.jetbrains.kotlin.ir.declarations.IrTypeParameter
 import org.jetbrains.kotlin.ir.expressions.IrCall
+import org.jetbrains.kotlin.ir.symbols.IrClassifierSymbol
 import org.jetbrains.kotlin.ir.symbols.IrConstructorSymbol
 import org.jetbrains.kotlin.ir.symbols.IrSymbol
 import org.jetbrains.kotlin.ir.types.IrDynamicType
@@ -98,5 +96,5 @@ fun IrDeclaration.isEffectivelyExternal(): Boolean {
 private val IrDeclaration.isDynamic get() = this is IrFunction && dispatchReceiverParameter?.type is IrDynamicType
 
 fun IrCall.isSuperToAny() =
-    superQualifier?.let { this.symbol.owner.descriptor.isFakeOverriddenFromAny() } ?: false
+    superQualifier?.let { this.symbol.owner.isFakeOverriddenFromAny() } ?: false
 

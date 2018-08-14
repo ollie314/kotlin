@@ -373,8 +373,10 @@ class LocalDeclarationsLowering(
             irClass.transformChildrenVoid(FunctionBodiesRewriter(localClassContext))
 
             val constructorsCallingSuper = constructors
+                .asSequence()
                 .map { localClassConstructors[it]!! }
                 .filter { it.declaration.callsSuper(context.irBuiltIns) }
+                .toList()
 
             assert(constructorsCallingSuper.any()) { "Expected at least one constructor calling super; class: $irClass" }
 

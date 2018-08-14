@@ -18,8 +18,6 @@ import org.jetbrains.kotlin.ir.declarations.impl.IrValueParameterImpl
 import org.jetbrains.kotlin.ir.expressions.*
 import org.jetbrains.kotlin.ir.expressions.impl.IrCallImpl
 import org.jetbrains.kotlin.ir.symbols.IrFunctionSymbol
-import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
-import org.jetbrains.kotlin.ir.symbols.IrValueParameterSymbol
 import org.jetbrains.kotlin.ir.symbols.IrValueSymbol
 import org.jetbrains.kotlin.ir.symbols.impl.IrValueParameterSymbolImpl
 import org.jetbrains.kotlin.ir.types.IrSimpleType
@@ -384,10 +382,14 @@ class CallableReferenceLowering(val context: JsIrBackendContext) {
         // The `getter` function takes only closure parameters
         val receivers = mutableListOf<IrValueParameter>()
         if (reference.dispatchReceiver != null) {
-            receivers += declaration.dispatchReceiverParameter!!
+            if (declaration.dispatchReceiverParameter != null) {
+                receivers += declaration.dispatchReceiverParameter!!
+            }
         }
         if (reference.extensionReceiver != null) {
-            receivers += declaration.extensionReceiverParameter!!
+            if (declaration.extensionReceiverParameter != null) {
+                receivers += declaration.extensionReceiverParameter!!
+            }
         }
 
         val getterValueParameters = receivers + declaration.valueParameters.dropLast(kFunctionValueParamsCount)
@@ -411,7 +413,10 @@ class CallableReferenceLowering(val context: JsIrBackendContext) {
                 p.varargElementType,
                 p.isCrossinline,
                 p.isNoinline
-            ).also { descriptor.bind(it) }
+            ).also {
+                descriptor.bind(it)
+                it.parent = refGetDeclaration
+            }
         }
 
         return refGetDeclaration

@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.descriptors.ClassKind
 import org.jetbrains.kotlin.ir.backend.js.utils.JsGenerationContext
 import org.jetbrains.kotlin.ir.backend.js.utils.Namer
 import org.jetbrains.kotlin.ir.declarations.IrConstructor
+import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
 import org.jetbrains.kotlin.ir.expressions.*
 import org.jetbrains.kotlin.ir.symbols.IrConstructorSymbol
 import org.jetbrains.kotlin.ir.types.isUnit
@@ -158,10 +159,11 @@ class IrElementToJsExpressionTransformer : BaseIrElementToJsNodeTransformer<JsEx
         val jsExtensionReceiver = expression.extensionReceiver?.accept(this, context)
         val arguments = translateCallArguments(expression, context)
 
+        val isSuspend = (symbol.owner as? IrSimpleFunction)?.isSuspend ?: false
+
         if (dispatchReceiver != null &&
-            dispatchReceiver.type.isFunctionTypeOrSubtype() && symbol.owner.name == OperatorNameConventions.INVOKE && !symbol.owner.isSuspend
+            dispatchReceiver.type.isFunctionTypeOrSubtype() && symbol.owner.name == OperatorNameConventions.INVOKE && !isSuspend
         ) {
-//        if (expression.origin == IrStatementOrigin.INVOKE) {
             return JsInvocation(jsDispatchReceiver!!, arguments)
         }
 

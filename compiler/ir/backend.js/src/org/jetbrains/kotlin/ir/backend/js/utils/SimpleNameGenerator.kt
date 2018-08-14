@@ -119,7 +119,7 @@ class SimpleNameGenerator : NameGenerator {
                     }
                 }
                 is IrField -> {
-                    nameBuilder.append(declaration.name.identifier)
+                    nameBuilder.append(declaration.name.asString())
                     if (declaration.parent is IrDeclaration) {
                         nameBuilder.append('.')
                         nameBuilder.append(getNameForDeclaration(declaration.parent as IrDeclaration, context))

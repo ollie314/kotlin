@@ -19,6 +19,7 @@ package org.jetbrains.kotlin.backend.common.lower
 import org.jetbrains.kotlin.backend.common.BackendContext
 import org.jetbrains.kotlin.backend.common.atMostOne
 import org.jetbrains.kotlin.descriptors.*
+import org.jetbrains.kotlin.descriptors.impl.ValueParameterDescriptorImpl
 import org.jetbrains.kotlin.incremental.components.LookupLocation
 import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.IrStatement
@@ -36,8 +37,6 @@ import org.jetbrains.kotlin.ir.visitors.IrElementTransformerVoid
 import org.jetbrains.kotlin.ir.visitors.IrElementVisitorVoid
 import org.jetbrains.kotlin.ir.visitors.acceptChildrenVoid
 import org.jetbrains.kotlin.name.Name
-import org.jetbrains.kotlin.resolve.NonReportingOverrideStrategy
-import org.jetbrains.kotlin.resolve.OverridingUtil
 import org.jetbrains.kotlin.resolve.scopes.DescriptorKindFilter
 import org.jetbrains.kotlin.resolve.scopes.MemberScopeImpl
 import org.jetbrains.kotlin.utils.Printer
@@ -156,35 +155,6 @@ open class IrBuildingTransformer(private val context: BackendContext) : IrElemen
             return super.visitAnonymousInitializer(declaration)
         }
     }
-}
-
-fun computeOverrides(current: ClassDescriptor, functionsFromCurrent: List<CallableMemberDescriptor>): List<DeclarationDescriptor> {
-
-    val result = mutableListOf<DeclarationDescriptor>()
-
-    val allSuperDescriptors = current.typeConstructor.supertypes
-        .flatMap { it.memberScope.getContributedDescriptors() }
-        .filterIsInstance<CallableMemberDescriptor>()
-
-    for ((name, group) in allSuperDescriptors.groupBy { it.name }) {
-        OverridingUtil.generateOverridesInFunctionGroup(
-            name,
-            /* membersFromSupertypes = */ group,
-            /* membersFromCurrent = */ functionsFromCurrent.filter { it.name == name },
-            current,
-            object : NonReportingOverrideStrategy() {
-                override fun addFakeOverride(fakeOverride: CallableMemberDescriptor) {
-                    result.add(fakeOverride)
-                }
-
-                override fun conflict(fromSuper: CallableMemberDescriptor, fromCurrent: CallableMemberDescriptor) {
-                    error("Conflict in scope of $current: $fromSuper vs $fromCurrent")
-                }
-            }
-        )
-    }
-
-    return result
 }
 
 class SimpleMemberScope(val members: List<DeclarationDescriptor>) : MemberScopeImpl() {

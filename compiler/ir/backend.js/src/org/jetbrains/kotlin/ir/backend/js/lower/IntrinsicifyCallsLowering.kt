@@ -225,7 +225,7 @@ class IntrinsicifyCallsLowering(private val context: JsIrBackendContext) : FileL
             }
 
             put(Name.identifier("hashCode")) { call ->
-                if (call.symbol.owner.descriptor.isFakeOverriddenFromAny()) {
+                if (call.symbol.owner.isFakeOverriddenFromAny()) {
                     if (call.isSuperToAny()) {
                         irCall(call, intrinsics.jsGetObjectHashCode, dispatchReceiverAsFirstArgument = true)
                     } else {
