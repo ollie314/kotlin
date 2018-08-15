@@ -37,6 +37,7 @@ public abstract class CompilerSmokeTestBase extends KotlinIntegrationTestBase {
         javaArgs.add("-cp");
         javaArgs.add(StringsKt.join(Arrays.asList(
                 getCompilerLib().getAbsolutePath() + File.separator + "kotlin-compiler.jar",
+                // TODO: These paths seem not to affect anything, consider removing
                 new File("dependencies/bootstrap-compiler/Kotlin/kotlinc/lib/kotlin-runtime.jar").getAbsolutePath(),
                 new File("dependencies/bootstrap-compiler/Kotlin/kotlinc/lib/kotlin-reflect.jar").getAbsolutePath()
         ), File.pathSeparator));

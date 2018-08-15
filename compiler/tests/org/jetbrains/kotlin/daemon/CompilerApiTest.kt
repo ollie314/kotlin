@@ -42,7 +42,7 @@ class CompilerApiTest : KotlinIntegrationTestBase() {
     val compilerClassPath = listOf(
             File(compilerLibDir, "kotlin-compiler.jar"))
     val scriptRuntimeClassPath = listOf(
-            File(compilerLibDir, "kotlin-runtime.jar"),
+            File(compilerLibDir, "kotlin-runtime.jar"),  // TODO: Missing file doesn't affect tests, consider removing
             File(compilerLibDir, "kotlin-script-runtime.jar"))
     val compilerId by lazy(LazyThreadSafetyMode.NONE) { CompilerId.makeCompilerId(compilerClassPath) }
 
